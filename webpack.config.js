@@ -33,6 +33,10 @@ module.exports = {
       {
         test: /\.vue$/,
         loader: 'vue-loader'
+      },
+      {
+        test: /\.(png|svg|jpe?g|gif|webp|ico)$/i,
+        type: 'asset/resource'
       }
     ]
   },

@@ -11,7 +11,10 @@
       </div>
       <form novalidate>
         <fieldset v-if="progress === 1" class="form__container">
-          <label class="form__label">
+          <label
+            class="form__label"
+            :class="{ invalid: v$.patientData.personalInfo.lastName.$error }"
+          >
             Фамилия
             <span class="form__requirement">*</span>
             <input
@@ -21,11 +24,14 @@
               v-model="patientData.personalInfo.lastName"
               placeholder="Введите вашу фамилию"
             />
-            <span class="form__error" v-if="v$.patientData.personalInfo.lastName.$error">{{
-              v$.patientData.personalInfo.lastName.$errors[0].$message
-            }}</span>
+            <span class="form__error" v-if="v$.patientData.personalInfo.lastName.$error">
+              Это обязательное поле
+            </span>
           </label>
-          <label class="form__label">
+          <label
+            class="form__label"
+            :class="{ invalid: v$.patientData.personalInfo.firstName.$error }"
+          >
             Имя
             <span class="form__requirement">*</span>
             <input
@@ -35,9 +41,9 @@
               v-model="patientData.personalInfo.firstName"
               placeholder="Введите ваше имя"
             />
-            <span class="form__error" v-if="v$.patientData.personalInfo.firstName.$error">{{
-              v$.patientData.personalInfo.firstName.$errors[0].$message
-            }}</span>
+            <span class="form__error" v-if="v$.patientData.personalInfo.firstName.$error">
+              Это обязательное поле
+            </span>
           </label>
           <label class="form__label">
             Отчество
@@ -48,7 +54,10 @@
               placeholder="Введите ваше отчество"
             />
           </label>
-          <label class="form__label">
+          <label
+            class="form__label"
+            :class="{ invalid: v$.patientData.personalInfo.birthDate.$error }"
+          >
             Дата рождения
             <span class="form__requirement">*</span>
             <input
@@ -57,22 +66,26 @@
               @focus="v$.patientData.personalInfo.birthDate.$touch"
               v-model="patientData.personalInfo.birthDate"
             />
-            <span class="form__error" v-if="v$.patientData.personalInfo.birthDate.$error">{{
-              v$.patientData.personalInfo.birthDate.$errors[0].$message
-            }}</span>
+            <span class="form__error" v-if="v$.patientData.personalInfo.birthDate.$error">
+              Это обязательное поле
+            </span>
           </label>
-          <label class="form__label">
+          <label
+            class="form__label"
+            :class="{ invalid: v$.patientData.personalInfo.cellNumber.$error }"
+          >
             Номер телефона
             <span class="form__requirement">*</span>
             <input
-              type="tel"
+              type="number"
               class="form__input"
               placeholder="Введите ваш номер"
-              value="7"
-              size="11"
+              @focus="v$.patientData.personalInfo.cellNumber.$touch"
               v-model="patientData.personalInfo.cellNumber"
             />
-            <span class="form__error">#</span>
+            <span class="form__error" v-if="v$.patientData.personalInfo.cellNumber.$error">
+              {{ cellNumberValidationMessage }}
+            </span>
           </label>
           <fieldset>
             <legend>Пол</legend>
@@ -122,7 +135,9 @@
               />
               ОМС
             </label>
-            <span class="form__error">#</span>
+            <span class="form__error" v-if="v$.patientData.group.$error">
+              Это обязательное поле
+            </span>
           </fieldset>
           <label>
             Лечащий врач
@@ -171,16 +186,19 @@
               placeholder="Введите индекс"
             />
           </label>
-          <label class="form__label">
+          <label class="form__label" :class="{ invalid: v$.patientData.address.city.$error }">
             Город
             <span class="form__requirement">*</span>
             <input
               type="text"
               class="form__input"
+              @focus="v$.patientData.address.city.$touch"
               v-model="patientData.address.city"
               placeholder="Введите индекс"
             />
-            <span class="form__error">#</span>
+            <span class="form__error" v-if="v$.patientData.address.city.$error">
+              Это обязательное поле
+            </span>
           </label>
           <label class="form__label">
             Улица
@@ -237,11 +255,21 @@
               placeholder="Введите кем выдан"
             />
           </label>
-          <label class="form__label">
+          <label
+            class="form__label"
+            :class="{ invalid: v$.patientData.passport.issuedWhen.$error }"
+          >
             Дата выдачи
             <span class="form__requirement">*</span>
-            <input type="date" class="form__input" v-model="patientData.passport.issuedWhen" />
-            <span class="form__error">#</span>
+            <input
+              type="date"
+              class="form__input"
+              @focus="v$.patientData.passport.issuedWhen.$touch"
+              v-model="patientData.passport.issuedWhen"
+            />
+            <span class="form__error" v-if="v$.patientData.passport.issuedWhen.$error">
+              Это обязательное поле
+            </span>
           </label>
         </fieldset>
       </form>
@@ -252,14 +280,27 @@
         <button v-if="progress < 3" class="form__button" @click="incrementProgress" type="button">
           Далее
         </button>
-        <button v-else class="form__button">Создать</button>
+        <button v-else :disabled="v$.$invalid" @click="submitHandler" class="form__button">
+          Создать
+        </button>
       </div>
     </section>
+    <div
+      class="success"
+      :class="{ success_opened: successMessageVisible }"
+      @click="clickOutsideSuccessPopup"
+    >
+      <div class="success__container">
+        <div class="success__image"></div>
+        <p class="success__text">Регистрация прошла успешно!</p>
+        <button class="success__close-btn" type="button" @click="setSuccessMessageVisible"></button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import { required } from '@vuelidate/validators';
+import { maxLength, minLength, required } from '@vuelidate/validators';
 import { useVuelidate } from '@vuelidate/core';
 export default {
   name: 'app',
@@ -272,7 +313,7 @@ export default {
           lastName: '',
           surname: '',
           birthDate: '',
-          cellNumber: '7',
+          cellNumber: 7,
           gender: ''
         },
         address: {
@@ -293,7 +334,8 @@ export default {
         group: [],
         therapist: '',
         noMessages: false
-      }
+      },
+      successMessageVisible: false
     };
   },
   setup() {
@@ -308,7 +350,7 @@ export default {
           lastName: { required },
           firstName: { required },
           birthDate: { required },
-          cellNumber: { required }
+          cellNumber: { required, minLength: minLength(11), maxLength: maxLength(20) }
         },
         address: {
           city: { required }
@@ -326,6 +368,70 @@ export default {
     },
     decrementProgress() {
       this.progress--;
+    },
+    setSuccessMessageVisible() {
+      this.successMessageVisible = !this.successMessageVisible;
+    },
+    submitHandler() {
+      if (this.v$.$invalid) {
+        this.v$.$touch();
+        return;
+      }
+      // отдаём на сервер
+      console.log(JSON.parse(JSON.stringify(this.patientData)));
+
+      // в then запроса
+      this.resetFormFields();
+      this.setSuccessMessageVisible();
+      // редирект на другой путь
+      // в catch – показываем ошибку
+    },
+    resetFormFields() {
+      this.v$.$reset();
+      this.patientData = {
+        personalInfo: {
+          firstName: '',
+          lastName: '',
+          surname: '',
+          birthDate: '',
+          cellNumber: 7,
+          gender: ''
+        },
+        address: {
+          index: '',
+          country: '',
+          region: '',
+          city: '',
+          street: '',
+          houseNumber: ''
+        },
+        passport: {
+          type: 'passport',
+          series: '',
+          number: '',
+          issuedBy: '',
+          issuedWhen: ''
+        },
+        group: [],
+        therapist: '',
+        noMessages: false
+      };
+    },
+    clickOutsideSuccessPopup(e) {
+      if (!this.$el.querySelector('.success__container').contains(e.target)) {
+        this.setSuccessMessageVisible();
+      }
+    }
+  },
+  computed: {
+    cellNumberValidationMessage() {
+      if (this.v$.patientData.personalInfo.cellNumber.required.$invalid) {
+        return 'Это обязательное поле';
+      } else if (this.v$.patientData.personalInfo.cellNumber.minLength.$invalid) {
+        return `Минимальная длина поля – ${this.v$.patientData.personalInfo.cellNumber.minLength.$params.min}`;
+      } else {
+        return `Максимальная длина поля – ${this.v$.patientData.personalInfo.cellNumber.maxLength.$params.max}`;
+      }
     }
   }
 };
@@ -337,17 +443,13 @@ export default {
 
 .invalid {
   color: $input-invalid;
-  .form__error {
-    visibility: visible;
-    opacity: 1;
-  }
-  &.form__input {
+  .form__input {
     border: $input-invalid 1px solid;
   }
 }
 
 .container {
-  padding-top: 100px;
+  padding-top: 80px;
 }
 
 .heading {
@@ -359,8 +461,7 @@ export default {
   flex-direction: column;
   margin-top: 30px;
   margin-inline: auto;
-  max-width: clamp(350px, 40vw, 650px);
-  border: $border-grey 1px solid;
+  max-width: clamp(350px, 60vw, 700px);
   background-color: #fff;
   border-radius: 20px;
   padding: 30px;
@@ -454,13 +555,6 @@ export default {
   border-radius: 10px;
   padding: 10px;
   appearance: none;
-
-  &:aria-invalid {
-    border: $input-invalid 1px solid;
-    .form__label {
-      color: $input-invalid;
-    }
-  }
 }
 
 .form__group {
@@ -500,6 +594,74 @@ export default {
 
   &:hover {
     opacity: 0.7;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: auto;
+  }
+}
+
+.success {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: hsla(0, 1%, 20%, 0);
+  visibility: hidden;
+  z-index: 101;
+  transition: background 0.4s ease-in-out;
+
+  &.success_opened {
+    background-color: hsla(0, 1%, 20%, 0.3);
+    visibility: visible;
+  }
+
+  .success__container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: clamp(280px, 25vw, 300px);
+    z-index: 102;
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 25px 5px;
+
+    .success__image {
+      background-image: url('./assets/images/success.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      width: 100px;
+      height: 100px;
+      margin-inline: auto;
+      margin-bottom: 20px;
+    }
+
+    .success__text {
+      font-size: clamp(16px, 4vw, 20px);
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .success__close-btn {
+      background-image: url('./assets/images/close-btn.svg');
+      background-size: contain;
+      width: 40px;
+      height: 40px;
+      position: absolute;
+      top: -40px;
+      right: -40px;
+      background-color: transparent;
+      cursor: pointer;
+      opacity: 1;
+      transition: opacity 0.3s ease-in;
+
+      &:hover {
+        opacity: 0.7;
+      }
+    }
   }
 }
 </style>

@@ -5,3 +5,25 @@
   margin: 0;
   font-weight: normal;
 }
+
+input[type='number'] {
+  appearance: none;
+  width: 100%;
+  -moz-appearance: textfield;
+  &::-webkit-inner-spin-button,
+  &::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  &::-moz-number-spin-box {
+    -moz-appearance: textfield;
+    margin: 0;
+  }
+}
+
+button {
+  appearance: none;
+  border: none;
+  padding: 0;
+}
