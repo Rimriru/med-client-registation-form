@@ -439,7 +439,6 @@ export default {
 
 <style lang="scss">
 @import './assets/scss/_variables.scss';
-@import './assets/scss/mixins.scss';
 
 .invalid {
   color: $input-invalid;
@@ -452,24 +451,33 @@ export default {
   padding-top: 80px;
 }
 
-.heading {
-  text-align: center;
+header {
+  margin-inline: auto;
+  max-width: clamp(320px, 15vw, 500px);
+  .heading {
+    text-align: center;
+    font-size: clamp(28px, 5vw, 30px);
+  }
 }
 
 .registry {
   display: flex;
   flex-direction: column;
-  margin-top: 30px;
-  margin-inline: auto;
-  max-width: clamp(350px, 60vw, 700px);
+  margin: 30px auto 50px;
+  max-width: clamp(330px, 60vw, 700px);
   background-color: #fff;
   border-radius: 20px;
   padding: 30px;
+  box-shadow: 18px 18px 46px #729bc4;
 }
 
 .registry__heading {
   text-align: center;
   margin-bottom: 13px;
+
+  @media screen and (max-width: 560px) {
+    font-size: 20px;
+  }
 }
 
 .registry__progress {
@@ -518,6 +526,11 @@ export default {
       display: block;
     }
   }
+
+  @media screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 23px;
+  }
 }
 
 .form__label {
@@ -548,13 +561,16 @@ export default {
 }
 
 .form__input {
-  max-width: 285px;
+  max-width: 300px;
   width: 100%;
   display: block;
   border: $border-grey 1px solid;
   border-radius: 10px;
   padding: 10px;
   appearance: none;
+  @media screen and (max-width: 768px) {
+    width: 100%;
+  }
 }
 
 .form__group {
@@ -583,7 +599,7 @@ export default {
   color: #fff;
   font-size: large;
   border-radius: 8px;
-  width: clamp(180px, 3vw, 200px);
+  width: clamp(90px, 20vw, 200px);
   margin-top: 30px;
   padding-inline: 0;
   padding-block: 17px;
@@ -600,10 +616,13 @@ export default {
     opacity: 0.4;
     cursor: auto;
   }
+
+  @media screen and (max-width: 768px) {
+  }
 }
 
 .success {
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -660,6 +679,11 @@ export default {
 
       &:hover {
         opacity: 0.7;
+      }
+
+      @media screen and (max-width: 368px) {
+        right: 0;
+        top: -45px;
       }
     }
   }
