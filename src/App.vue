@@ -21,7 +21,7 @@
               type="text"
               class="form__input"
               @focus="v$.patientData.personalInfo.lastName.$touch"
-              v-model="patientData.personalInfo.lastName"
+              v-model.trim="patientData.personalInfo.lastName"
               placeholder="Введите вашу фамилию"
             />
             <span class="form__error" v-if="v$.patientData.personalInfo.lastName.$error">
@@ -38,7 +38,7 @@
               type="text"
               class="form__input"
               @focus="v$.patientData.personalInfo.firstName.$touch"
-              v-model="patientData.personalInfo.firstName"
+              v-model.trim="patientData.personalInfo.firstName"
               placeholder="Введите ваше имя"
             />
             <span class="form__error" v-if="v$.patientData.personalInfo.firstName.$error">
@@ -50,7 +50,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.personalInfo.surname"
+              v-model.trim="patientData.personalInfo.surname"
               placeholder="Введите ваше отчество"
             />
           </label>
@@ -81,7 +81,7 @@
               class="form__input"
               placeholder="Введите ваш номер"
               @focus="v$.patientData.personalInfo.cellNumber.$touch"
-              v-model="patientData.personalInfo.cellNumber"
+              v-model.trim="patientData.personalInfo.cellNumber"
             />
             <span class="form__error" v-if="v$.patientData.personalInfo.cellNumber.$error">
               {{ cellNumberValidationMessage }}
@@ -164,7 +164,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.address.index"
+              v-model.trim="patientData.address.index"
               placeholder="Введите индекс"
             />
           </label>
@@ -173,7 +173,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.address.country"
+              v-model.trim="patientData.address.country"
               placeholder="Введите индекс"
             />
           </label>
@@ -182,7 +182,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.address.region"
+              v-model.trim="patientData.address.region"
               placeholder="Введите индекс"
             />
           </label>
@@ -193,7 +193,7 @@
               type="text"
               class="form__input"
               @focus="v$.patientData.address.city.$touch"
-              v-model="patientData.address.city"
+              v-model.trim="patientData.address.city"
               placeholder="Введите индекс"
             />
             <span class="form__error" v-if="v$.patientData.address.city.$error">
@@ -205,7 +205,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.address.street"
+              v-model.trim="patientData.address.street"
               placeholder="Введите индекс"
             />
           </label>
@@ -214,7 +214,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.address.houseNumber"
+              v-model.trim="patientData.address.houseNumber"
               placeholder="Введите индекс"
             />
           </label>
@@ -233,7 +233,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.passport.series"
+              v-model.trim="patientData.passport.series"
               placeholder="Введите серию"
             />
           </label>
@@ -242,7 +242,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.passport.number"
+              v-model.trim="patientData.passport.number"
               placeholder="Введите номер"
             />
           </label>
@@ -251,7 +251,7 @@
             <input
               type="text"
               class="form__input"
-              v-model="patientData.passport.issuedBy"
+              v-model.trim="patientData.passport.issuedBy"
               placeholder="Введите кем выдан"
             />
           </label>
@@ -457,6 +457,7 @@ header {
   .heading {
     text-align: center;
     font-size: clamp(28px, 5vw, 30px);
+    color: $deep-grey;
   }
 }
 
@@ -474,6 +475,7 @@ header {
 .registry__heading {
   text-align: center;
   margin-bottom: 13px;
+  color: $deep-grey;
 
   @media screen and (max-width: 560px) {
     font-size: 20px;
@@ -492,7 +494,7 @@ header {
 }
 
 .registry__progress-bar {
-  background-color: $progress-bar;
+  background-color: $light-grey;
   height: 5px;
   position: relative;
   border-radius: 5px;
